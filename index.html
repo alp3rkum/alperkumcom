@@ -1,13 +1,33 @@
 <!doctype html>
-<html lang="en">
+<html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>alperkumcom</title>
+    <meta name="description" content="alperkum" />
+    <meta name="keywords" content="alperkum" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
+ <script type="module">
+  import { setGlobalSEO, setPageSEO } from "/seoindex.js";
+
+  const path = window.location.pathname;
+
+  if (path.startsWith("/portfoy/")) {
+    // /portfoy/{proje}
+    const projectSlug = path.replace("/portfoy/", "");
+    setPageSEO(`/ajax/projectseo.php?url=${projectSlug}`);
+  } else if (path.startsWith("/blog/")) {
+    // /blog/{gönderi}
+    const blogSlug = path.replace("/blog/", "");
+    setPageSEO(`/ajax/blogseo.php?url=${blogSlug}`);
+  } else {
+    // Global SEO
+    setGlobalSEO();
+  }
+</script>
 </html>

@@ -13,7 +13,7 @@ try {
 
 $faviconPath = '../assets/favicon.ico';
 // Favicon'un var olup olmadığını kontrol etme
-$faviconExists = file_exists($faviconPath) ? $faviconPath : 'https://via.placeholder.com/64x64?text=ICO'; 
+$faviconExists = file_exists($faviconPath) ? $faviconPath : 'https://placehold.co/64x64?text=ICO'; 
 ?>
 <!-- HTML / Tailwind Kodu -->
 <div class="max-w-[500px] mx-auto">
@@ -122,8 +122,15 @@ $faviconExists = file_exists($faviconPath) ? $faviconPath : 'https://via.placeho
     // Sitemap AJAX mantığı korundu
     document.querySelector("#sitemap").addEventListener("click", async function() {
         try {
+            showOverlay();
+            const formData = new FormData();
+            formData.append("csrf_token", "<?= $_SESSION['csrf_token'] ?>");
+
             // URL, ana admin dizinine göre ayarlanmalıdır. Varsayım: ajax/sitemap.php doğru yolda.
-            const response = await fetch("/admin/ajax/sitemap.php"); 
+            const response = await fetch("/admin/ajax/sitemap.php", {
+                method: "POST",
+                body: formData
+            });
             if (!response.ok) throw new Error("İstek başarısız oldu! (Durum: " + response.status + ")");
 
             const blob = await response.blob();
@@ -152,6 +159,9 @@ $faviconExists = file_exists($faviconPath) ? $faviconPath : 'https://via.placeho
                 position: "top-right"
             });
         }
+        finally {
+            hideOverlay();
+        }
     });
 
     // Form Gönderimini AJAX'a dönüştürme
@@ -160,9 +170,11 @@ $faviconExists = file_exists($faviconPath) ? $faviconPath : 'https://via.placeho
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
+            showOverlay();
 
             const formData = new FormData(this);
             formData.append('seo_type','general');
+            formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>");
 
             try {
                 // AJAX modül yolunu belirt
@@ -191,6 +203,9 @@ $faviconExists = file_exists($faviconPath) ? $faviconPath : 'https://via.placeho
                     type: "error",
                     position: "top-right"
                 });
+            }
+            finally {
+                hideOverlay();
             }
         });
     });

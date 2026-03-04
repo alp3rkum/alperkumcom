@@ -103,11 +103,13 @@ $kategoriler = $database->selectMulti("* FROM blog_kategoriler");
 
         dataUl.querySelectorAll("li").forEach(li => {
             li.addEventListener("click", async () => {
+                showOverlay();
                 const id = li.dataset.id;
 
                 const formData = new FormData();
                 formData.append("table", "blog_kategoriler");
                 formData.append("where", "id = " + id);
+                formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>");
 
                 try {
                     const res = await fetch("/admin/ajax/read.php", {
@@ -148,10 +150,14 @@ $kategoriler = $database->selectMulti("* FROM blog_kategoriler");
                         position: "top-right"
                     });
                 }
+                finally {
+                    hideOverlay();
+                }
             });
         });
 
         newBtn.addEventListener("click", () => {
+            showOverlay();
             form.reset();
             form.id.value = "0";
             saveOrUpdateBtn.textContent = "Kaydet";
@@ -162,10 +168,12 @@ $kategoriler = $database->selectMulti("* FROM blog_kategoriler");
                 item.classList.remove("bg-white", "text-black", "pointer-events-none", "shadow-inner");
                 item.classList.add("bg-gray-100", "hover:bg-gray-200");
             });
+            hideOverlay();
         });
 
         saveOrUpdateBtn.addEventListener("click", async (event) => {
             event.preventDefault();
+            showOverlay();
             const id = form.elements["id"].value;/*form.id.value*/;
 
             const formData = new FormData();
@@ -196,12 +204,12 @@ $kategoriler = $database->selectMulti("* FROM blog_kategoriler");
             });
 
             let url = "/admin/ajax/create.php";
-
+            formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>");
             if (id !== "0") {
                 url = "/admin/ajax/update.php";
                 formData.append("where", "id = " + id);
             }
-
+            formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>");
             try {
                 const res = await fetch(url, {
                     method: "POST",
@@ -229,11 +237,11 @@ $kategoriler = $database->selectMulti("* FROM blog_kategoriler");
 
                     li.addEventListener("click", async () => {
                         const id = li.dataset.id;
-
+                        showOverlay();
                         const formData = new FormData(); //bu kısım, admin paneline sızıldığında SQL Injection'a açık
-                        formData.append("table", "chatbotlar c JOIN kullanicilar k ON c.author_user_id = k.id");
-                        formData.append("columns", "c.*, CONCAT(k.ad_soyad, ' (', k.kullanici_adi, ')') AS creator_name");
-                        formData.append("where", "c.id = " + id);
+                        formData.append("table", "blog_kategoriler");
+                        formData.append("where", "id = " + id);
+                        formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>");
 
                         try {
                             const res = await fetch("/admin/ajax/read.php", {
@@ -276,11 +284,15 @@ $kategoriler = $database->selectMulti("* FROM blog_kategoriler");
                                 position: "top-right"
                             });
                         }
+                        finally
+                        {
+                            hideOverlay();
+                        }
                     });
                 }
                 else if(id !== "0" && result.success) {
                     const existingLi = dataUl.querySelector(`li[data-id="id"]`);
-                    const baslik1 = form.isim.value;
+                    const baslik1 = form.kategori_adi_tr.value;
                     if (existingLi) {
                         existingLi.textContent = baslik1;
                     }
@@ -295,12 +307,16 @@ $kategoriler = $database->selectMulti("* FROM blog_kategoriler");
                     showProgress: true
                 });
             }
+            finally
+            {
+                hideOverlay();
+            }
         });
 
         deleteBtn.addEventListener("click", async () => {
             const id = form.id.value;
             const currentLi = dataUl.querySelector(`li[data-id="${id}"]`);
-            const dataName = form.isim.value || "Bu kategoriyi"; // Onay mesajı için isim
+            const dataName = form.kategori_adi_tr.value || "Bu kategoriyi"; // Onay mesajı için isim
 
             if (id === "0") {
                 new Notification({
@@ -312,10 +328,11 @@ $kategoriler = $database->selectMulti("* FROM blog_kategoriler");
             }
 
             if (confirm(`Emin misiniz? Bu kategoriyi kalıcı olarak silmek istiyor musunuz? Bu işlem geri alınamaz.`)) {
-
+                showOverlay();
                 const formData = new FormData();
                 formData.append("table", "blog_kategoriler");
                 formData.append("where", "id = " + id);
+                formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>");
 
                 try {
                     const res = await fetch("/admin/ajax/delete.php", {
@@ -362,6 +379,9 @@ $kategoriler = $database->selectMulti("* FROM blog_kategoriler");
                         type: "error",
                         position: "top-right"
                     });
+                }
+                finally {
+                    hideOverlay();
                 }
             }
         });

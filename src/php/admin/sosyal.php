@@ -112,7 +112,7 @@ foreach ($global_vars as $row) {
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-
+            showOverlay();
             const formData = new FormData(this);
             // Tüm verileri JSON olarak göndermek daha kolay olabilir, ancak form-data da kabul.
             // PHP'de FormData'yı işlemek için formdaki input isimlerini kullanıyoruz.
@@ -142,6 +142,9 @@ foreach ($global_vars as $row) {
                     type: "error",
                     position: "top-right"
                 });
+            }
+            finally {
+                hideOverlay();
             }
         });
     });

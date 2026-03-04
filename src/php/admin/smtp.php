@@ -79,8 +79,9 @@ $global_vars = $database->getGlobalVars("smtp_host", "smtp_email", "smtp_pass", 
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-
+            showOverlay();
             const formData = new FormData(this);
+            formData.append("csrf_token", "<?= $_SESSION['csrf_token'] ?>");
 
             try {
                 // AJAX modül yolunu belirt
@@ -107,6 +108,9 @@ $global_vars = $database->getGlobalVars("smtp_host", "smtp_email", "smtp_pass", 
                     type: "error",
                     position: "top-right"
                 });
+            }
+            finally {
+                hideOverlay();
             }
         });
     });

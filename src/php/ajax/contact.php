@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $subject = $_POST['subject'] ?? '';
     $message = $_POST['message'] ?? '';
 
-    $toEmail = '';
+    $toEmail = 'alperkum.cs@gmail.com';
 
     if (empty($email) || empty($message)) {
         header('Content-Type: application/json');
@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    $htmlBody = '';
+    $htmlBody = $message;
 
     $sendResult = sendEmail(
         $email,

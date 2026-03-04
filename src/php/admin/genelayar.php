@@ -77,7 +77,12 @@ $is_offline = $database->getGlobalVars('offline')['offline'];
     
     function backupDatabase()
     {
-        fetch('ajax/db_backup.php?mode=backup', {method: 'GET'})
+        showOverlay();
+        const formData = new FormData();
+        formData.append("mode", "backup");
+        formData.append("csrf_token", "<?= $_SESSION['csrf_token'] ?>");
+
+        fetch("ajax/db_backup.php", { method: "POST", body: formData })
         .then(response => response.json()) 
         .then(t => {
             new Notification({
@@ -93,6 +98,7 @@ $is_offline = $database->getGlobalVars('offline')['offline'];
                 position: "top-right"
             });
         });
+        hideOverlay();
     }
 
     function restoreDatabase()
@@ -100,8 +106,11 @@ $is_offline = $database->getGlobalVars('offline')['offline'];
         if (!confirm("Veritabanını yedekten geri yüklemek istediğinize emin misiniz? Bu işlem geri alınamaz!")) {
             return;
         }
-
-        fetch('ajax/db_backup.php?mode=restore', {method: 'GET'})
+        showOverlay();
+        const formData = new FormData();
+        formData.append("mode", "restore");
+        formData.append("csrf_token", "<?= $_SESSION['csrf_token'] ?>");
+        fetch("ajax/db_backup.php", { method: "POST", body: formData })
         .then(response => response.json()) 
         .then(t => {
             new Notification({
@@ -120,6 +129,7 @@ $is_offline = $database->getGlobalVars('offline')['offline'];
                 position: "top-right"
             });
         });
+        hideOverlay();
     }
 
     // Form Gönderimini AJAX'a dönüştürme
@@ -128,7 +138,7 @@ $is_offline = $database->getGlobalVars('offline')['offline'];
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-
+            showOverlay();
             // Sadece offline checkbox'ı ve csrf_token'ı gönder
             const formData = new FormData();
             formData.append('csrf_token', this.querySelector('input[name="csrf_token"]').value);
@@ -161,6 +171,10 @@ $is_offline = $database->getGlobalVars('offline')['offline'];
                     type: "error",
                     position: "top-right"
                 });
+            }
+            finally
+            {
+                hideOverlay();
             }
         });
     });

@@ -18,6 +18,12 @@ app.use('/ajax', createProxyMiddleware({
   changeOrigin: true
 }));
 
+app.use('/assets', createProxyMiddleware({
+  target: PHP_TARGET + '/assets',
+  changeOrigin: true,
+  pathRewrite: { '^/assets': '' }
+}));
+
 // Vite dev server
 const vite = await createServer({
   server: { middlewareMode: true }

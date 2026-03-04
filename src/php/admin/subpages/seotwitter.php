@@ -108,6 +108,7 @@ try {
 
             const formData = new FormData(this);
             formData.append('seo_type','twitter');
+            formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>");
 
             try {
                 // AJAX modül yolunu belirt

@@ -1,5 +1,6 @@
 <?php
 // Gerekli dosyaları dahil et
+require('../../functions/util.php');
 require '../../functions/db.php';
 $database = Database::getInstance();
 $conn = $database->getConnection();

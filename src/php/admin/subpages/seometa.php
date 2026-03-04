@@ -110,9 +110,10 @@ try {
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-
+            showOverlay();
             const formData = new FormData(this);
             formData.append('seo_type','og');
+            formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>");
 
             try {
                 const res = await fetch('/admin/ajax/seo.php', {
@@ -138,6 +139,9 @@ try {
                     type: "error",
                     position: "top-right"
                 });
+            }
+            finally {
+                hideOverlay();
             }
         });
     });

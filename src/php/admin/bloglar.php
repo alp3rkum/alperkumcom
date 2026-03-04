@@ -49,6 +49,40 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
                         </select>
                     </div>
 
+                    <div class="grid grid-cols-1 gap-6 p-4 bg-indigo-50/30 rounded-xl border border-indigo-100">
+                        <div>
+                            <label class="block font-semibold text-sm text-indigo-900 mb-2">
+                            Kapak Görseli Yükle
+                            </label>
+                            <input 
+                            type="file" 
+                            id="kapak_fotografi" 
+                            name="media_files[]" 
+                            class="w-full text-sm" 
+                            accept="image/*"
+                            >
+                            <p class="text-[10px] text-indigo-500 mt-1">
+                            Blog gönderisi için tek bir kapak görseli seçin.
+                            </p>
+                        </div>
+                        </div>
+
+                        <!-- KAPAK GÖRSELİ ÖNİZLEME -->
+                        <div id="coverPreviewContainer" class="hidden mt-4">
+                            <h4 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Kapak Görseli
+                            </h4>
+                            <div id="coverPreview" class="w-full h-64 border border-indigo-200 rounded-lg overflow-hidden">
+                                <!-- JS ile doldurulacak -->
+                            </div>
+                        </div>
+
+
+
+                    <h4 class="text-md font-bold text-gray-800 border-b pb-3 mb-3">SEO Ayarları</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                             <label for="meta_title_tr" class="block font-semibold text-sm text-gray-700 mb-2">SEO Başlık (TR)</label>
@@ -85,33 +119,92 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
 
 <script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js"></script>
 <script>
+    document.getElementById("kapak_fotografi").addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+            const previewContainer = document.getElementById("coverPreviewContainer");
+            const preview = document.getElementById("coverPreview");
+            preview.innerHTML = `<img src="${e.target.result}" class="object-cover w-full h-full" />`;
+            previewContainer.classList.remove("hidden");
+            };
+            reader.readAsDataURL(file);
+        }
+    });
     // Global editor instances
     let editorInstanceTr, editorInstanceEn;
 
     const editorConfig = {
-        ckfinder: { uploadUrl: '/upload.php' },
+        ckfinder: { uploadUrl: '/admin/ajax/upload.php' },
         toolbar: ['heading', '|', 'imageUpload', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList'],
         heading: {
             options: [
                 { model: 'paragraph', title: 'Paragraf', class: 'ck-heading_paragraph' },
                 { model: 'heading1', view: 'h1', title: 'Başlık 1', class: 'ck-heading_heading1' },
-                { model: 'heading2', view: 'h2', title: 'Başlık 2', class: 'ck-heading_heading2' }
+                { model: 'heading2', view: 'h2', title: 'Başlık 2', class: 'ck-heading_heading2' },
+                { model: 'heading3', view: 'h3', title: 'Başlık 3', class: 'ck-heading_heading3' }
             ]
         }
     };
 
+    const customUploadAdapter = (loader) => {
+        return {
+            upload: () => {
+                return loader.file.then(file => {
+                    return new Promise((resolve, reject) => {
+                        const data = new FormData();
+                        data.append('file', file);
+                        data.append('csrf_token', "<?= $_SESSION['csrf_token'] ?>");
+
+                        fetch('/admin/ajax/upload.php', {
+                            method: 'POST',
+                            body: data
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error("Sunucu hatası: " + response.status);
+                            return response.json();
+                        })
+                        .then(result => {
+                            // CKEditor BURAYI BEKLER:
+                            if (result.success && result.path) {
+                                resolve({
+                                    default: result.path // Editör bu URL'yi alıp <img> src'sine yazar
+                                });
+                            } else {
+                                reject(result.message || "Yükleme başarısız");
+                            }
+                        })
+                        .catch(error => {
+                            reject("Hata: " + error.message);
+                        });
+                    });
+                });
+            },
+            abort: () => {}
+        };
+    };
+
     // TR Editor Init
     ClassicEditor.create(document.querySelector('#blog_icerik_tr'), editorConfig)
-        .then(editor => { 
-            editorInstanceTr = editor; 
-            editor.ui.view.editable.element.style.minHeight = '300px';
-        }).catch(console.error);
-
+    .then(editor => { 
+        editorInstanceTr = editor; 
+        editor.ui.view.editable.element.style.minHeight = '300px';
+        
+        // Adaptörü buraya bağla
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return customUploadAdapter(loader);
+        };
+    }).catch(console.error);
     // EN Editor Init
     ClassicEditor.create(document.querySelector('#blog_icerik_en'), editorConfig)
         .then(editor => { 
             editorInstanceEn = editor; 
             editor.ui.view.editable.element.style.minHeight = '300px';
+
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return customUploadAdapter(loader);
+            };
         }).catch(console.error);
 
     function slugify(text) {
@@ -130,43 +223,72 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
 
         // LIST CLICK (READ)
         const setupLiClick = (li) => {
-            li.addEventListener("click", async () => {
-                const id = li.dataset.id;
-                const formData = new FormData();
-                formData.append("table", "bloglar");
-                formData.append("where", "id = " + id);
+    li.addEventListener("click", async () => {
+        showOverlay();
+        const id = li.dataset.id;
+        const formData = new FormData();
+        formData.append("table", "bloglar");
+        formData.append("where", "id = " + id);
+        formData.append("csrf_token", "<?= $_SESSION['csrf_token'] ?>");
 
-                try {
-                    const res = await fetch("/admin/ajax/read.php", { method: "POST", body: formData });
-                    const result = await res.json();
+        try {
+            const res = await fetch("/admin/ajax/read.php", { method: "POST", body: formData });
+            const result = await res.json();
 
-                    if (result.success) {
-                        const row = result.data[0];
-                        
-                        // Fill standard inputs
-                        Object.keys(row).forEach(key => {
-                            if(form[key]) form[key].value = row[key];
-                        });
-
-                        // FILL CKEDITORS (Kritik nokta burası)
-                        if(editorInstanceTr) editorInstanceTr.setData(row.blog_icerik_tr || '');
-                        if(editorInstanceEn) editorInstanceEn.setData(row.blog_icerik_en || '');
-
-                        dataUl.querySelectorAll("li").forEach(item => item.classList.remove("bg-white", "shadow-inner", "pointer-events-none"));
-                        li.classList.add("bg-white", "shadow-inner", "pointer-events-none");
-
-                        saveOrUpdateBtn.textContent = "Güncelle";
-                        newBtn.classList.remove("hidden");
-                        deleteBtn.classList.remove("hidden");
+            if (result.success) {
+                const row = result.data[0];
+                
+                // Formdaki inputları doldururken dosya inputlarını atlayalım
+                Object.keys(row).forEach(key => {
+                    const field = form[key];
+                    if (field) {
+                        // EĞER ELEMENT BİR DOSYA INPUTU İSE DEĞER ATAMA (Hata veren kısım burasıydı)
+                        if (field.type === "file") {
+                            field.value = ""; // Sadece temizle, dosya yolunu basamazsın
+                        } else {
+                            field.value = row[key];
+                        }
                     }
-                } catch (err) { console.error("Hata:", err); }
-            });
-        };
+                });
+
+                // --- GÖRSEL ÖNİZLEME (Dosya yolunu burada gösteriyoruz) ---
+                const previewContainer = document.getElementById("coverPreviewContainer");
+                const preview = document.getElementById("coverPreview");
+                
+                // Veritabanındaki görsel sütun adınız 'kapak_fotografi' ise:
+                if (row.kapak_fotografi) {
+                    preview.innerHTML = `<img src="/${row.kapak_fotografi}" class="object-cover w-full h-full" />`;
+                    previewContainer.classList.remove("hidden");
+                } else {
+                    previewContainer.classList.add("hidden");
+                    preview.innerHTML = "";
+                }
+
+                // --- CKEDITOR VERİLERİNİ BAS ---
+                if (editorInstanceTr) editorInstanceTr.setData(row.blog_icerik_tr || '');
+                if (editorInstanceEn) editorInstanceEn.setData(row.blog_icerik_en || '');
+
+                // UI Aktiflik Durumu
+                dataUl.querySelectorAll("li").forEach(item => item.classList.remove("bg-white", "shadow-inner", "pointer-events-none"));
+                li.classList.add("bg-white", "shadow-inner", "pointer-events-none");
+
+                saveOrUpdateBtn.textContent = "Güncelle";
+                newBtn.classList.remove("hidden");
+                deleteBtn.classList.remove("hidden");
+            }
+        } catch (err) { 
+            console.error("Hata:", err); 
+        } finally { 
+            hideOverlay(); 
+        }
+    });
+};
 
         dataUl.querySelectorAll("li").forEach(setupLiClick);
 
         // NEW BUTTON
         newBtn.addEventListener("click", () => {
+            showOverlay();
             form.reset();
             form.id.value = "0";
             if(editorInstanceTr) editorInstanceTr.setData('');
@@ -175,13 +297,16 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
             newBtn.classList.add("hidden");
             deleteBtn.classList.add("hidden");
             dataUl.querySelectorAll("li").forEach(item => item.classList.remove("bg-white", "shadow-inner", "pointer-events-none"));
+            document.getElementById('coverPreview').innerHTML = '';
+            hideOverlay();
         });
 
         // SAVE / UPDATE
         saveOrUpdateBtn.addEventListener("click", async (e) => {
             e.preventDefault();
+            showOverlay();
             const id = form.id.value;
-            const formData = new FormData();
+            const formData = new FormData(form);
             formData.append("table", "bloglar");
 
             const data = {};
@@ -194,9 +319,15 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
             if(editorInstanceEn) data['blog_icerik_en'] = editorInstanceEn.getData();
 
             formData.append("data", JSON.stringify(data));
-
+            formData.append("kategori","blog");
+            formData.append("resim_sutun","kapak_fotografi");
             let url = id === "0" ? "/admin/ajax/create.php" : "/admin/ajax/update.php";
+            formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>");
             if (id !== "0") formData.append("where", "id = " + id);
+
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
 
             try {
                 const res = await fetch(url, { method: "POST", body: formData });
@@ -205,6 +336,7 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
                 new Notification({ text: result.message, type: result.success ? "success" : "error" });
 
                 if (result.success) {
+                    console.log(result);
                     if(id === "0") {
                         // Yeni eklenen öğeyi listeye ekle
                         const li = document.createElement("li");
@@ -220,6 +352,7 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
                     }
                 }
             } catch (err) { console.error(err); }
+            finally { hideOverlay(); }
         });
 
         // DELETE BUTTON
@@ -228,9 +361,11 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
             if (id === "0") return;
 
             if (confirm("Bu blog yazısını silmek istediğinize emin misiniz?")) {
+                showOverlay();
                 const formData = new FormData();
                 formData.append("table", "bloglar");
                 formData.append("where", "id = " + id);
+                formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>");
 
                 try {
                     const res = await fetch("/admin/ajax/delete.php", { method: "POST", body: formData });
@@ -242,6 +377,7 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
                         new Notification({ text: result.message, type: "success" });
                     }
                 } catch (err) { console.error(err); }
+                finally { hideOverlay(); }
             }
         });
     });

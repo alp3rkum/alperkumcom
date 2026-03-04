@@ -1,4 +1,13 @@
 <?php
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Geçersiz istek"
+    ]);
+    exit;
+}
+
+
 session_start();
 
 // CSRF kontrolü

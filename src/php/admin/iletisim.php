@@ -93,6 +93,7 @@ try {
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
+            showOverlay();
 
             const formData = new FormData(this);
 
@@ -120,6 +121,9 @@ try {
                     type: "error",
                     position: "top-right"
                 });
+            }
+            finally {
+                hideOverlay();
             }
         });
     });

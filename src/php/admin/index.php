@@ -30,7 +30,7 @@ if (empty($_SESSION['csrf_token'])) {
 
   <div class="flex lg:flex-row">
     <?php include("./partials/_sidebar.php"); ?>
-
+    <?php include("./partials/_spinner.php"); ?>
     <main id="admin-panel-content" class="flex-1 bg-gray-100 min-h-screen p-6 transition-all duration-300">
       <?php
       switch ($currentPath) {
@@ -65,11 +65,35 @@ if (empty($_SESSION['csrf_token'])) {
         case '/admin/bloglar':
             include 'bloglar.php';
             break;
+        case '/admin/hakkinda':
+            include 'hakkinda.php';
+            break;
+        case '/admin/projeler':
+            include 'projeler.php';
+            break;
+        case '/admin/api':
+            include 'api.php';
+            break;
+        case '/admin/logo':
+            include 'logo.php';
+            break;
       }
       ?>
     </main>
   </div>
   <script>
+    function showOverlay() {
+      const overlay = document.getElementById("overlay");
+      overlay.classList.remove("opacity-0", "invisible");
+      overlay.classList.add("opacity-100", "visible");
+    }
+
+    function hideOverlay() {
+      const overlay = document.getElementById("overlay");
+      overlay.classList.remove("opacity-100", "visible");
+      overlay.classList.add("opacity-0", "invisible");
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       const adminNav = document.getElementById('admin-nav');
       const adminPanel = document.getElementById('admin-panel-content');

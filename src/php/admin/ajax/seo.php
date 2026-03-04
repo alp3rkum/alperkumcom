@@ -1,11 +1,22 @@
 <?php
 // Ortak Başlangıç ve Bağlantılar
+require('../../functions/util.php');
 require '../../functions/db.php';
 $database = Database::getInstance();
 $conn = $database->getConnection();
 
 session_start();
 header('Content-Type: application/json');
+
+$csrf_token = $_POST['csrf_token'] ?? '';
+if (!csrf_check($csrf_token)) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    echo json_encode([
+        "status" => "error",
+        "message" => "Geçersiz istek (CSRF hatası)!"
+    ]);
+    exit;
+}
 
 // Ortak Değişken (Hangi modülün çalışacağını belirler)
 // Bu değerin POST isteği ile gelmesi beklenir: örn: '{"seo_type": "og", ...}'

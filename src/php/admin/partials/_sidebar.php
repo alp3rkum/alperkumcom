@@ -7,12 +7,12 @@
         style="height: calc(100vh); scrollbar-width: thin; scrollbar-color: oklch(0.373 0.034 259.733) oklch(0.446 0.03 256.802);">
         
         <div class="startbar-menu flex flex-col h-full">
-            <div class="startbar-collapse flex-grow-1 overflow-y-auto mt-6 lg:mt-0" id="startbarCollapse" data-simplebar>
+            <div class="startbar-collapse flex-grow-1 overflow-y-auto mt-11 lg:mt-0" id="startbarCollapse" data-simplebar>
                 <ul class="flex-grow-1 px-3 py-2 space-y-2">
-                    <?php if (file_exists(__DIR__ . "/../assets/logo.png")): ?>
+                    <?php if (file_exists(__DIR__ . "/../logo.png")): ?>
                     <li class="flex justify-center items-center py-4">
                             <a href="/admin/" class="logo block">
-                                <img src="/assets/logo.png" alt="Admin Paneli" class="h-[100px] w-auto">
+                                <img src="/admin/logo.png" alt="Admin Paneli" class="h-[100px] w-auto">
                             </a>
                     </li>
                     <?php endif; ?>
@@ -34,7 +34,9 @@
                         </div>
                       </button>
                       <ul class="contentList px-2 space-y-1 <?= $current_theme['sub_color'] ?>" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease;">
-                        <li><a href="/admin/iletisim" class="d-block p-2 mt-1 rounded <?= $currentPath === '/admin/iletisim' ? $current_theme['active_color'] . ' hover:' . $current_theme['active_color'] : 'hover:' . $current_theme['hover_color'] . ' active:' . $current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out">İletişim Bilgileri</a></li>
+                        <li><a href="/admin/hakkinda" class="d-block p-2 mt-1 rounded <?= $currentPath === '/admin/hakkinda' ? $current_theme['active_color'] . ' hover:' . $current_theme['active_color'] : 'hover:' . $current_theme['hover_color'] . ' active:' . $current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out">Hakkında Sayfası</a></li>
+                        <li><a href="/admin/projeler" class="d-block p-2 mt-1 rounded <?= $currentPath === '/admin/projeler' ? $current_theme['active_color'] . ' hover:' . $current_theme['active_color'] : 'hover:' . $current_theme['hover_color'] . ' active:' . $current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out">Projeler</a></li>
+                        <li><a href="/admin/iletisim" class="d-block p-2 mb-1 rounded <?= $currentPath === '/admin/iletisim' ? $current_theme['active_color'] . ' hover:' . $current_theme['active_color'] : 'hover:' . $current_theme['hover_color'] . ' active:' . $current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out">İletişim Bilgileri</a></li>
                       </ul>
                     </li>
                     <li>
@@ -80,6 +82,12 @@
                         </ul>
                     </li>
                     <li>
+                        <button class="d-block p-2 rounded <?= $currentPath === '/admin/api' ? $current_theme['active_color']. ' hover:'. $current_theme['active_color'] : 'hover:'.$current_theme['hover_color'].' active:'.$current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out"
+                                style="width: 100%; text-align: left; border: none; cursor: pointer;" onclick="window.location.href='/admin/api'">
+                            <i class="bi bi-gear-wide-connected me-1"></i> API Entegrasyonları
+                        </button>
+                    </li>
+                    <li>
                         <button class="toggleButton mt-0 d-block p-2 rounded hover:<?= $current_theme['hover_color'] ?> active:<?= $current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out"
                         style="width: 100%; text-align: left; border: none; cursor: pointer;">
                             <div class="flex items-center justify-between w-full">
@@ -91,8 +99,8 @@
                         </button>
                         <ul class="contentList px-2 space-y-1 <?= $current_theme['sub_color'] ?>" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease;">
                             <li><a href="/admin/genelayar" class="d-block p-2 mt-1 rounded <?= $currentPath === '/admin/genelayar' ? $current_theme['active_color'].' hover:'.$current_theme['active_color'] : 'hover:'.$current_theme['hover_color'].' active:'.$current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out">Genel Ayarlar</a></li>
-                            <li><a href="/admin/smtp" class="d-block p-2 mb-1 rounded <?= $currentPath === '/admin/smtp' ? $current_theme['active_color'].' hover:'.$current_theme['active_color'] : 'hover:'.$current_theme['hover_color'].' active:'.$current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out">SMTP Ayarları</a></li>
-                            <li><a href="/admin/logo" class="d-block p-2 mt-1 rounded <?= $currentPath === '/admin/logo' ? $current_theme['active_color'] . ' hover:' . $current_theme['active_color'] : 'hover:' . $current_theme['hover_color'] . ' active:' . $current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out">Panel Logosu</a></li>
+                            <li><a href="/admin/smtp" class="d-block p-2 mt-1 rounded <?= $currentPath === '/admin/smtp' ? $current_theme['active_color'].' hover:'.$current_theme['active_color'] : 'hover:'.$current_theme['hover_color'].' active:'.$current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out">SMTP Ayarları</a></li>
+                            <li><a href="/admin/logo" class="d-block p-2 mb-1 rounded <?= $currentPath === '/admin/logo' ? $current_theme['active_color'] . ' hover:' . $current_theme['active_color'] : 'hover:' . $current_theme['hover_color'] . ' active:' . $current_theme['active_color'] ?> <?= $current_theme['text_color'] ?> sidebar-button transition duration-250 ease-in-out">Panel Logosu</a></li>
                         </ul>
                     </li>
                 </ul>

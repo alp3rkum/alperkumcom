@@ -1,10 +1,29 @@
 <?php
+require('../../functions/util.php');
 require '../../functions/db.php';
 $database = Database::getInstance();
 $conn = $database->getConnection();
 
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Geçersiz istek"
+    ]);
+    exit;
+}
+
 session_start();
 header('Content-Type: application/json');
+
+$csrf_token = $_POST['csrf_token'] ?? '';
+if (!csrf_check($csrf_token)) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    echo json_encode([
+        "status" => "error",
+        "message" => "Geçersiz istek (CSRF hatası)!"
+    ]);
+    exit;
+}
 
 $action = $_POST['action'] ?? '';
 $id = $_POST['id'] ?? 0;

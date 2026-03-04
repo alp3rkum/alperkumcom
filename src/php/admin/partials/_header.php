@@ -51,9 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!confirmed) return;
 
     try {
+      const formData = new FormData();
+      formData.append("csrf_token","<?= $_SESSION['csrf_token'] ?>")
       const response = await fetch("/admin/ajax/cikis.php", {
         method: "POST",
-        credentials: "same-origin"
+        credentials: "same-origin",
+        body: formData
       });
 
       const data = await response.json();
