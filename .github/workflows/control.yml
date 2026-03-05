@@ -1,0 +1,25 @@
+name: My First CI Script Ever
+
+#on: ne zaman çalışacak
+on:
+  push: #push olduğunda
+    branches: [ "master" ] #master branchine
+
+jobs:
+  stage1: #yapılacak işlemin ismi, 'stage1' dışında da herhangi bir şey koyulabilir
+    runs-on: ubuntu-latest #buluttaki bir Linux makinesinde çalışır
+
+    steps: # yapılacak işlemleri (algoritmayı) adım adım tarif et
+    - name: Checkout #adım ismi
+      uses: actions/checkout@v4 #uses çalıştırılacak komutu tanımlar, bu komut için Github'tan kopyalar
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4 #Node.js kurar
+      with: # yapılacak işlemin parametrelerini verir
+        node-version: 22 #Node.js 22 kullanıyorum
+    
+    - name: Install Packages
+      run: npm install #run'da terminale komut yazar gibi komut yazılır
+
+    - name: Build Test
+      run: npm run build
