@@ -11,10 +11,10 @@ class Database {
     private $database;
 
     // Geliştirme (Dev) Ayarları
-    private $host_dev = 'localhost:3307';
-    private $username_dev = 'root';
+    private $host_dev = '';
+    private $username_dev = '';
     private $password_dev = '';
-    private $database_dev = 'alperkumcom';
+    private $database_dev = '';
 
     // Üretim (Prod) Ayarları
     private $host_prod = '';
