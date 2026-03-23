@@ -11,7 +11,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="fixed bottom-0 left-0 w-full text-gray-400 text-sm p-2 bg-black/50 flex items-center justify-between">
+    <footer className="fixed bottom-0 left-0 w-full text-gray-400 text-sm p-2 bg-[#000011] flex items-center justify-between">
       {/* Sistem Zamanı her zaman görünür */}
       <div>
         {t("system_time")}:{" "}

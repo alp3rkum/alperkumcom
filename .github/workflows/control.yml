@@ -21,5 +21,11 @@ jobs:
     - name: Install Packages
       run: npm install #run'da terminale komut yazar gibi komut yazılır
 
+    #- name: Security/Vulnerability Control
+    #  run: npm audit --audit-level=high
+
+    - name: Quality Control
+      run: npm run lint -- --max-warnings 0
+
     - name: Build Test
       run: npm run build

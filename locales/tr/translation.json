@@ -11,7 +11,7 @@
   "memory_title": "Merak & Devamlılık — 1024GB eşdeğeri",
   "memory_sub": "Önbellek: Sürücü Yüklendi",
   "kernel_version": "KERNEL_VERSION",
-  "version_title": "Portfolio v1.0",
+  "version_title": "Portfolio v1.1",
   "version_sub": "React + PHP + MySQL ile aktif geliştirmede",
   "architecture_manifest": "ARCHITECTURE_MANIFEST",
   "manifest_text": "Kod yalnızca çalışmak için değil, aynı zamanda bir düzen ve estetik yaratmak için vardır. Sistemlerim, algoritmik mantığın sağlamlığı ile mimari hassasiyetin zarafetini birleştirir.",
@@ -57,5 +57,7 @@
   "default_category_description": "Yazdığım tüm blog yazılarını burada okuyabilirsiniz.",
   "back_to_blogs": "← BLOGLAR'A DÖN",
   "share": "PAYLAŞ",
-  "rss_feed": "RSS Akışı"
+  "rss_feed": "RSS Akışı",
+  "portfolio_title": "Portföy",
+  "portfolio_subtitle": "Bu sayfada, geliştirdiğim ve içinde yer aldığım projeler hakkında bilgi sahibi olabilirsiniz."
 }

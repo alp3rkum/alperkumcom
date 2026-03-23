@@ -10,7 +10,7 @@ try {
 
     $results = $database->selectSingle("
         meta_title_tr, meta_desc_tr, meta_keyword_tr,
-        meta_title_en, meta_desc_en, meta_keyword_en
+        meta_title_en, meta_desc_en, meta_keyword_en, kapak_fotografi
         FROM bloglar
         WHERE meta_url_tr = ? OR meta_url_en = ?
     ", [$url, $url]);

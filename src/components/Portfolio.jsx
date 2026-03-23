@@ -29,7 +29,16 @@ function Portfolio() {
   }
 
   return (
-    <>
+    <div className="space-y-6 p-4">
+      <div className="flex items-center gap-6">
+        <h1 className="text-3xl font-bold text-white tracking-wide whitespace-nowrap">
+          {t("portfolio_title")}
+        </h1>
+        <div className="h-px w-full bg-white/10"></div>
+      </div>
+      <p className="text-gray-300 italic mt-2">
+        {t("portfolio_subtitle")}
+      </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
       {portfolioContent.map((project) => {
         const title =
@@ -68,7 +77,7 @@ function Portfolio() {
         );
       })}
     </div>
-    </>
+    </div>
   );
 }
 

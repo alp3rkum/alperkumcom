@@ -11,7 +11,7 @@
   "memory_title": "Curiosity & Persistence — equivalent of 1024GB",
   "memory_sub": "Cache: Driver Loaded",
   "kernel_version": "KERNEL_VERSION",
-  "version_title": "Portfolio v1.0",
+  "version_title": "Portfolio v1.1",
   "version_sub": "Active development with React + PHP + MySQL",
   "architecture_manifest": "ARCHITECTURE_MANIFEST",
   "manifest_text": "Code exists not only to run, but also to create order and aesthetics. My systems combine the robustness of algorithmic logic with the elegance of architectural precision.",
@@ -57,5 +57,7 @@
   "default_category_description": "You can read all my blog posts here.",
   "back_to_blogs": "← BACK TO BLOGS",
   "share": "SHARE",
-  "rss_feed": "RSS Feed"
+  "rss_feed": "RSS Feed",
+  "portfolio_title": "Portfolio",
+  "portfolio_subtitle": "On this page, you can find information about the projects I have developed and been involved in."
 }
