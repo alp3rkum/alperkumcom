@@ -3,7 +3,7 @@ import { useParams, NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 function BlogPage() {
-  const { category, url } = useParams();
+  const { url } = useParams();
   const [data, setData] = useState(null);
   const { t, i18n } = useTranslation();
 

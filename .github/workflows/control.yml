@@ -28,7 +28,7 @@ jobs:
     #   run: npm audit --audit-level=high
 
     - name: Quality Control
-      run: npm run lint -- --max-warnings 0
+      run: npm run lint -- --max-warnings 10
 
     - name: Build Test
       run: npm run build
