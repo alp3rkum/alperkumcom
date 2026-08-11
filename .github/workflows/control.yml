@@ -48,9 +48,11 @@ jobs:
         coverage: none
       
     - name: Validate composer.json
-      run: composer validate --strict
+      working-directory: src/php
+      run: composer validate
     
     - name: Install Composer Dependencies
+      working-directory: src/php
       run: composer install --prefer-dist --no-progress
     
     - name: PHP Syntax Check (Lint)

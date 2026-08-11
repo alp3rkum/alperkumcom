@@ -1,1 +1,62 @@
+﻿reactcheck	Quality Control	﻿2026-08-11T11:38:42.7884431Z ##[group]Run npm run lint -- --max-warnings 0
+reactcheck	Quality Control	2026-08-11T11:38:42.7884851Z [36;1mnpm run lint -- --max-warnings 0[0m
+reactcheck	Quality Control	2026-08-11T11:38:42.7932458Z shell: /usr/bin/bash -e {0}
+reactcheck	Quality Control	2026-08-11T11:38:42.7932737Z ##[endgroup]
+reactcheck	Quality Control	2026-08-11T11:38:42.8959855Z 
+reactcheck	Quality Control	2026-08-11T11:38:42.8960478Z > alperkumcom@1.2.0 lint
+reactcheck	Quality Control	2026-08-11T11:38:42.8961276Z > eslint . --max-warnings 0
+reactcheck	Quality Control	2026-08-11T11:38:42.8961484Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8096744Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8098298Z /home/runner/work/alperkumcom/alperkumcom/src/components/About.jsx
+reactcheck	Quality Control	2026-08-11T11:38:44.8130111Z ##[error]  6:9  error  'contentData' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+reactcheck	Quality Control	2026-08-11T11:38:44.8137351Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8137755Z /home/runner/work/alperkumcom/alperkumcom/src/components/BlogPage.jsx
+reactcheck	Quality Control	2026-08-11T11:38:44.8139052Z ##[error]  6:11  error  'category' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+reactcheck	Quality Control	2026-08-11T11:38:44.8140032Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8140327Z /home/runner/work/alperkumcom/alperkumcom/src/components/Header.jsx
+reactcheck	Quality Control	2026-08-11T11:38:44.8141208Z   37:7  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+reactcheck	Quality Control	2026-08-11T11:38:44.8141596Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8142573Z Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+reactcheck	Quality Control	2026-08-11T11:38:44.8143650Z * Update external systems with the latest state from React.
+reactcheck	Quality Control	2026-08-11T11:38:44.8144374Z * Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+reactcheck	Quality Control	2026-08-11T11:38:44.8144822Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8145630Z Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+reactcheck	Quality Control	2026-08-11T11:38:44.8146518Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8146628Z   35 |     );
+reactcheck	Quality Control	2026-08-11T11:38:44.8146902Z   36 |     if (currentIndex !== -1) {
+reactcheck	Quality Control	2026-08-11T11:38:44.8147269Z > 37 |       setActiveIndex(currentIndex);
+reactcheck	Quality Control	2026-08-11T11:38:44.8147949Z      |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+reactcheck	Quality Control	2026-08-11T11:38:44.8148409Z   38 |     }
+reactcheck	Quality Control	2026-08-11T11:38:44.8148687Z   39 |   }, [location.pathname]);
+reactcheck	Quality Control	2026-08-11T11:38:44.8148993Z   40 |  react-hooks/set-state-in-effect
+reactcheck	Quality Control	2026-08-11T11:38:44.8153294Z ##[warning]  39:6  warning  React Hook useEffect has a missing dependency: 'menuItems'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+reactcheck	Quality Control	2026-08-11T11:38:44.8159300Z ##[warning]  60:6  warning  React Hook useEffect has a missing dependency: 'menuItems'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+reactcheck	Quality Control	2026-08-11T11:38:44.8161760Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8162173Z /home/runner/work/alperkumcom/alperkumcom/src/php/admin/assets/js/Notification.js
+reactcheck	Quality Control	2026-08-11T11:38:44.8163349Z ##[error]  62:3  error  '#type' is defined but never used  no-unused-private-class-members
+reactcheck	Quality Control	2026-08-11T11:38:44.8164095Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8164410Z /home/runner/work/alperkumcom/alperkumcom/src/php/admin/assets/js/admin.js
+reactcheck	Quality Control	2026-08-11T11:38:44.8165462Z ##[error]   1:10  error  'validatePassword' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+reactcheck	Quality Control	2026-08-11T11:38:44.8167342Z ##[error]  20:10  error  'resetForm' is defined but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+reactcheck	Quality Control	2026-08-11T11:38:44.8168939Z ##[error]  42:10  error  'deleteItem' is defined but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+reactcheck	Quality Control	2026-08-11T11:38:44.8170481Z ##[error]  73:10  error  'updateRecord' is defined but never used. Allowed unused vars must match /^[A-Z_]/u      no-unused-vars
+reactcheck	Quality Control	2026-08-11T11:38:44.8171963Z ##[error]  73:30  error  'rawformData' is defined but never used                                                  no-unused-vars
+reactcheck	Quality Control	2026-08-11T11:38:44.8173346Z ##[error]  74:33  error  'formData' is not defined                                                                no-undef
+reactcheck	Quality Control	2026-08-11T11:38:44.8174712Z ##[error]  75:5   error  'formData' is not defined                                                                no-undef
+reactcheck	Quality Control	2026-08-11T11:38:44.8176205Z ##[error]  76:5   error  'formData' is not defined                                                                no-undef
+reactcheck	Quality Control	2026-08-11T11:38:44.8177611Z ##[error]  80:15  error  'formData' is not defined                                                                no-undef
+reactcheck	Quality Control	2026-08-11T11:38:44.8178396Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8178804Z ✖ 15 problems (13 errors, 2 warnings)
+reactcheck	Quality Control	2026-08-11T11:38:44.8178999Z 
+reactcheck	Quality Control	2026-08-11T11:38:44.8868136Z ##[error]Process completed with exit code 1.
+phpcheck	Validate composer.json	﻿2026-08-11T11:38:50.8199748Z ##[group]Run composer validate --strict
+phpcheck	Validate composer.json	2026-08-11T11:38:50.8200149Z [36;1mcomposer validate --strict[0m
+phpcheck	Validate composer.json	2026-08-11T11:38:50.8250068Z shell: /usr/bin/bash -e {0}
+phpcheck	Validate composer.json	2026-08-11T11:38:50.8250368Z env:
+phpcheck	Validate composer.json	2026-08-11T11:38:50.8250577Z   COMPOSER_PROCESS_TIMEOUT: 0
+phpcheck	Validate composer.json	2026-08-11T11:38:50.8250835Z   COMPOSER_NO_INTERACTION: 1
+phpcheck	Validate composer.json	2026-08-11T11:38:50.8251068Z   COMPOSER_NO_AUDIT: 1
+phpcheck	Validate composer.json	2026-08-11T11:38:50.8251287Z ##[endgroup]
+phpcheck	Validate composer.json	2026-08-11T11:38:51.5864046Z ./composer.json not found.
+phpcheck	Validate composer.json	2026-08-11T11:38:51.5976349Z ##[error]Process completed with exit code 3.
 
