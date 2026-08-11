@@ -1,5 +1,6 @@
 import { React, useState } from 'react';
 import { useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 
 function Contact({ csrf }) {
     const { t } = useTranslation();
@@ -103,10 +104,10 @@ function Contact({ csrf }) {
   {/* Bilgi Kutucukları */}
   <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
     {/* İletişim E-posta */}
-    <div className="p-4 border border-blue-500 rounded bg-black/40">
+    <div className="text-center md:text-left p-4 border border-blue-500 rounded bg-black/40">
       <h2 className="text-blue-400 font-bold mb-1">{t("email_target")}</h2>
       <a
-        href="mailto:iletisim@alanadiniz.com"
+        href="mailto:alper@alperkum.com"
         className="text-gray-300 hover:text-cyan-300 transition-colors"
       >
         {t("email_address")}
@@ -117,16 +118,36 @@ function Contact({ csrf }) {
     </div>
 
     {/* Sosyal Medya */}
-    <div className="p-4 border border-blue-500 rounded bg-black/40">
+    <div className="text-center md:text-left p-4 border border-blue-500 rounded bg-black/40">
       <h2 className="text-blue-400 font-bold mb-1">{t("social_link")}</h2>
-      <p className="text-gray-300">{t("social_text")}</p>
+      <div className="flex flex-col items-center md:items-start space-y-2 mt-2">
+        {/* LinkedIn Linki */}
+        <a 
+          href="https://www.linkedin.com/in/alper-kum" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-blue-400 hover:text-indigo-300 transition-colors font-medium"
+        >
+          {t("social_linkedin")}
+        </a>
+
+        {/* GitHub Linki */}
+        <a 
+          href="https://github.com/alp3rkum" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-400 hover:text-indigo-300 transition-colors font-medium"
+        >
+          {t("social_github")}
+        </a>
+      </div>
       <p className="text-sm italic text-blue-400/75 mt-1">
         {t("social_detail")}
       </p>
     </div>
 
     {/* Durum */}
-    <div className="p-4 border border-blue-500 rounded bg-black/40">
+    <div className="text-center md:text-left p-4 border border-blue-500 rounded bg-black/40">
       <h2 className="text-blue-400 font-bold mb-1">{t("system_status")}</h2>
       <p className="text-gray-300">{t("status_text")}</p>
       <p className="text-sm italic text-blue-400/75 mt-1">{t("status_sub")}</p>
@@ -138,7 +159,7 @@ function Contact({ csrf }) {
     onSubmit={handleSubmit}
     className="space-y-4 p-6 border-2 border-cyan-400/50 rounded-lg bg-black/50 shadow-lg"
   >
-    <h2 className="text-2xl font-semibold text-cyan-300 tracking-wider border-b border-blue-600 pb-2 mb-4">
+    <h2 className="text-center md:text-left text-2xl font-semibold text-cyan-300 tracking-wider border-b border-blue-600 pb-2 mb-4">
       {t("send_message_form")}
     </h2>
 

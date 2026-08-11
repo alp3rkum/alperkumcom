@@ -44,11 +44,11 @@ if (!empty($proje_urls)) {
     }
 }
 
-$blog_urls = $database->selectMulti("meta_url_tr, meta_url_en FROM bloglar");
+$blog_urls = $database->selectMulti("kategori_id, meta_url_tr, meta_url_en FROM bloglar");
 if (!empty($blog_urls)) {
     foreach ($blog_urls as $url) {
         // Kategori bilgisi çek
-        $kategori = $db->selectOne("cat_url_tr, cat_url_en FROM blog_kategoriler WHERE id = ?", [$url['kategori_id']]);
+        $kategori = $database->selectSingle("cat_url_tr, cat_url_en FROM blog_kategoriler WHERE id = ?", [$url['kategori_id']]);
 
         if ($kategori) {
             // Türkçe link

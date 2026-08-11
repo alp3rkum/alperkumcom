@@ -106,7 +106,7 @@ function Blogs() {
       </div>
 
       {/* Kategori Açıklaması */}
-      <p className="text-gray-300 italic mt-2">
+      <p className="text-center md:text-left text-gray-300 italic mt-2">
         {getCategoryDescription(selectedCategory)}
       </p>
 

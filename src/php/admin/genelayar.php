@@ -118,9 +118,6 @@ $is_offline = $database->getGlobalVars('offline')['offline'];
                 type: t.status === "success" ? "success" : "error",
                 position: "top-right"
             });
-            if (t.status === "success") {
-                setTimeout(() => window.location.reload(), 1000);
-            }
         })
         .catch(err => {
             new Notification({

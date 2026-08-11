@@ -114,7 +114,7 @@ function PortfolioDetail() {
         <img
           src={"/" + project.kapak_foto}
           alt={title}
-          className="w-full h-[180px] sm:h-[240px] md:h-[300px] lg:h-[400px] xl:h-[500px] object-cover border border-blue-400"
+          className="w-full h-[400px] sm:h-[400px] md:h-[480px] lg:h-[560px] xl:h-[640px] object-cover border border-blue-400"
         />
       </figure>
 

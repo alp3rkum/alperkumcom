@@ -17,10 +17,10 @@ class Database {
     private $database_dev = 'alperkumcom';
 
     // Üretim (Prod) Ayarları
-    private $host_prod = '';
-    private $username_prod = '';
-    private $password_prod = '';
-    private $database_prod = '';
+    private $host_prod = 'localhost:3306';
+    private $username_prod = 'alperpgu_admin';
+    private $password_prod = 'p{(qgURS{Gn5X.4&';
+    private $database_prod = 'alperpgu_alperkumcom';
     
     private function __construct() {
         $isLocal = isset($_SERVER['HTTP_HOST']) && in_array($_SERVER['HTTP_HOST'], ['localhost:8000']);
@@ -236,20 +236,62 @@ class Database {
 
     // backup ve restore kısımları aynı kaldı.
     public function backup() {
-        $backupDir = realpath(__DIR__ . '/../admin/db_backup');
-        $backupFile = $backupDir . '/backup-' . date("Y-m-d-H-i-s") . '.sql';
-
-        $portSegment = strpos($this->host, ':') !== false ? '--port=' . explode(':', $this->host)[1] : '';
-        $passwordSegment = !empty($this->password) ? "--password=$this->password" : '';
-        $command = "mysqldump --user=$this->username $passwordSegment --host=" . explode(':', $this->host)[0] . " $portSegment $this->database -r \"$backupFile\" 2>&1";
-        
-        $output = [];
-        $resultCode = null;
-        exec($command, $output, $resultCode);
-
-        if ($resultCode !== 0) {
-            throw new Exception("Yedekleme sırasında hata oluştu: " . implode("\n", $output));
+        $targetDir = __DIR__ . '/../admin/db_backup';
+    
+        // Dizin var mı kontrol et, yoksa oluştur
+        if (!file_exists($targetDir)) {
+            // 0755 izinleri genel kullanım için güvenlidir. 
+            // true parametresi iç içe klasörlerin (admin/db_backup) oluşturulmasını sağlar.
+            if (!mkdir($targetDir, 0755, true)) {
+                throw new Exception("Yedekleme dizini oluşturulamadı: " . $targetDir);
+            }
         }
+
+        $backupDir = realpath($targetDir);
+
+        $backupDir = realpath(__DIR__ . '/../admin/db_backup');
+        if (!$backupDir) {
+            throw new Exception("Yedekleme dizini bulunamadı!");
+        }
+
+        $backupFile = $backupDir . '/backup-' . date("Y-m-d-H-i-s") . '.sql';
+        
+        // Dosyayı yazma modunda aç (Memory limitini zorlamamak için parça parça yazacağız)
+        $handle = fopen($backupFile, 'w+');
+        
+        // Başlangıç ayarları
+        fwrite($handle, "-- Alper Kum SQL Backup\n-- Date: " . date("Y-m-d H:i:s") . "\n\n");
+        fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\nSET NAMES utf8mb4;\n\n");
+
+        // Tüm tabloları çek
+        $stmt = $this->conn->query("SHOW TABLES");
+        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        foreach ($tables as $table) {
+            // 1. Tablo Yapısını Al (CREATE TABLE)
+            $createStmt = $this->conn->query("SHOW CREATE TABLE `$table`")->fetch();
+            fwrite($handle, "DROP TABLE IF EXISTS `$table`;\n");
+            fwrite($handle, $createStmt['Create Table'] . ";\n\n");
+
+            // 2. Tablo Verilerini Al
+            $rows = $this->conn->query("SELECT * FROM `$table`")->fetchAll(PDO::FETCH_ASSOC);
+            
+            if (count($rows) > 0) {
+                foreach ($rows as $row) {
+                    $values = array_map(function($value) {
+                        if ($value === null) return 'NULL';
+                        return $this->conn->quote($value);
+                    }, $row);
+                    
+                    $sql = "INSERT INTO `$table` VALUES (" . implode(', ', $values) . ");\n";
+                    fwrite($handle, $sql);
+                }
+                fwrite($handle, "\n");
+            }
+        }
+
+        fwrite($handle, "SET FOREIGN_KEY_CHECKS=1;");
+        fclose($handle);
     }
 
     public function count($table, $whereClause = "", $params = [])
@@ -265,21 +307,34 @@ class Database {
     }
 
     public function restore() {
-        $backupDir = realpath(__DIR__ . '/../admin/db_backup');
-        $backups = glob("$backupDir/*.sql");
-
-        if (count($backups) === 1) {
-            $backupFile = $backups[0];
-        } elseif (count($backups) > 1) {
-            $backupFile = end($backups);
-        } else {
-            die("Hata: Hiç yedek bulunamadı!");
+        $targetDir = __DIR__ . '/../admin/db_backup';
+    
+        // Dizin var mı kontrol et, yoksa oluştur
+        if (!file_exists($targetDir)) {
+            // 0755 izinleri genel kullanım için güvenlidir. 
+            // true parametresi iç içe klasörlerin (admin/db_backup) oluşturulmasını sağlar.
+            if (!mkdir($targetDir, 0755, true)) {
+                throw new Exception("Yedekleme dizini oluşturulamadı: " . $targetDir);
+            }
         }
 
-        $portSegment = strpos($this->host, ':') !== false ? '--port=' . explode(':', $this->host)[1] : '';
-        $passwordSegment = !empty($this->password) ? "--password=$this->password" : '';
-        $command = "mysql --user=$this->username $passwordSegment --host=" . explode(':', $this->host)[0] . " $portSegment $this->database < \"$backupFile\"";
-        exec($command);
+        $backupDir = realpath($targetDir);
+        $backups = glob("$backupDir/*.sql");
+
+        if (empty($backups)) {
+            throw new Exception("Hata: Hiç yedek bulunamadı!");
+        }
+
+        // En son yedeği al
+        $backupFile = end($backups);
+        $sql = file_get_contents($backupFile);
+
+        try {
+            // FOREIGN_KEY_CHECKS'i kapatıp toplu sorgu çalıştırıyoruz
+            $this->conn->exec("SET FOREIGN_KEY_CHECKS=0; " . $sql . " SET FOREIGN_KEY_CHECKS=1;");
+        } catch (PDOException $e) {
+            throw new Exception("Geri yükleme hatası: " . $e->getMessage());
+        }
     }
 }
 ?>

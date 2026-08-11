@@ -29,17 +29,17 @@ function Portfolio() {
   }
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 px-2 md:px-4 py-4">
       <div className="flex items-center gap-6">
         <h1 className="text-3xl font-bold text-white tracking-wide whitespace-nowrap">
           {t("portfolio_title")}
         </h1>
         <div className="h-px w-full bg-white/10"></div>
       </div>
-      <p className="text-gray-300 italic mt-2">
+      <p className="text-center md:text-left text-gray-300 italic mt-2">
         {t("portfolio_subtitle")}
       </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-2 md:px-4 py-4">
       {portfolioContent.map((project) => {
         const title =
           i18n.language === "tr"
@@ -66,10 +66,10 @@ function Portfolio() {
               />
             </figure>
             <div className="card-body text-green-300">
-              <h2 className="card-title text-blue-300 tracking-wider">
+              <h2 className="w-full flex justify-center md:justify-start text-center md:text-left card-title text-blue-300 tracking-wider">
                 {title}
               </h2>
-              <p className="text-sm text-gray-400">
+              <p className="text-center md:text-left text-sm text-gray-400">
                 {project.proje_teknolojiler}
               </p>
             </div>

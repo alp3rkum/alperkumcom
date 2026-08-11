@@ -18,7 +18,8 @@ export default function Header() {
     { label: t("menu_about"), path: "/hakkimda" },
     { label: t("menu_portfolio"), path: "/portfoy" },
     { label: t("menu_blogs"), path: "/bloglar" },
-    { label: t("menu_contact"), path: "/iletisim" }
+    { label: t("menu_contact"), path: "/iletisim" },
+    { label: t("menu_privacy"), path: "/gizlilik" }
   ];
 
   function playClickSound() {
@@ -83,7 +84,7 @@ export default function Header() {
 
         {/* Hamburger button (mobilde görünür) */}
         <button
-          className="sm:hidden relative z-10 text-white"
+          className="md:hidden relative z-10 text-white"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           ☰
@@ -91,7 +92,7 @@ export default function Header() {
       </div>
 
       {/* Normal navbar (desktop) */}
-      <nav className="hidden sm:flex w-full bg-black/92 backdrop-blur-md border-b border-white/10 p-4 items-center justify-between">
+      <nav className="hidden md:flex w-full bg-black/92 backdrop-blur-md border-b border-white/10 p-4 items-center justify-between">
   {/* Sol taraf: menü linkleri */}
   <div className="flex gap-4">
     {menuItems.map((item, i) => (
@@ -139,7 +140,7 @@ export default function Header() {
 
       {/* Açılır kapanır menü (mobil) */}
       <nav
-  className={`sm:hidden absolute top-16 left-0 w-full bg-black/92 backdrop-blur-md border-b border-white/10 flex flex-col p-4 gap-4 transform transition-transform duration-300 ease-out z-49 ${
+  className={`md:hidden absolute top-16 left-0 w-full bg-black/92 backdrop-blur-md border-b border-white/10 flex flex-col p-4 gap-4 transform transition-transform duration-300 ease-out z-49 ${
     menuOpen ? "translate-y-0" : "-translate-y-full"
   }`}
 >

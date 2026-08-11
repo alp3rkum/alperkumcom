@@ -1,12 +1,14 @@
-name: My First CI Script Ever
+name: My First CI Script Ever (v2) #scriptin adı
 
 #on: ne zaman çalışacak
 on:
   push: #push olduğunda
-    branches: [ "master" ] #master branchine
+    branches: [ "master", "v2" ] #master branchine
+  pull_request:
+    branches: [ "v2" ]
 
 jobs:
-  stage1: #yapılacak işlemin ismi, 'stage1' dışında da herhangi bir şey koyulabilir
+  reactcheck: #yapılacak işlemin ismi, 'stage1' dışında da herhangi bir şey koyulabilir
     runs-on: ubuntu-latest #buluttaki bir Linux makinesinde çalışır
 
     steps: # yapılacak işlemleri (algoritmayı) adım adım tarif et
@@ -17,15 +19,39 @@ jobs:
       uses: actions/setup-node@v4 #Node.js kurar
       with: # yapılacak işlemin parametrelerini verir
         node-version: 22 #Node.js 22 kullanıyorum
+        cache: 'npm'
     
     - name: Install Packages
-      run: npm install #run'da terminale komut yazar gibi komut yazılır
+      run: npm ci #run'da terminale komut yazar gibi komut yazılır
 
-    #- name: Security/Vulnerability Control
-    #  run: npm audit --audit-level=high
+    - name: Security/Vulnerability Control
+      run: npm audit --audit-level=high
 
     - name: Quality Control
       run: npm run lint -- --max-warnings 0
 
     - name: Build Test
       run: npm run build
+  
+  phpcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, pdo, pdo_mysql
+        coverage: none
+      
+    - name: Validate composer.json
+      run: composer validate --strict
+    
+    - name: Install Composer Dependencies
+      run: composer install --prefer-dist --no-progress
+    
+    - name: PHP Syntax Check (Lint)
+      run: find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \;
