@@ -27,8 +27,8 @@ jobs:
     # - name: Security/Vulnerability Control
     #   run: npm audit --audit-level=high
 
-    # - name: Quality Control
-    #   run: npm run lint -- --max-warnings 15
+    - name: Quality Control
+      run: npm run lint -- --max-warnings 10
 
     - name: Build Test
       run: npm run build
