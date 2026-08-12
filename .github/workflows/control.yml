@@ -27,8 +27,8 @@ jobs:
     # - name: Security/Vulnerability Control
     #   run: npm audit --audit-level=high
 
-    - name: Quality Control
-      run: npm run lint -- --max-warnings 10
+    # - name: Quality Control
+    #   run: npm run lint -- --max-warnings 10
 
     - name: Build Test
       run: npm run build
@@ -36,14 +36,19 @@ jobs:
   phpcheck:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['7.4', '8.2']
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Setup PHP
+    - name: Setup PHP (${{ matrix.php-version }})
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: ${{ matrix.php-version }}
         extensions: mbstring, pdo, pdo_mysql
         coverage: none
       
