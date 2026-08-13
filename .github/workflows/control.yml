@@ -36,6 +36,13 @@ jobs:
 
     - name: Build Test
       run: npm run build
+    
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: react-dist-output # Artifact'e verilecek isim
+        path: dist # Saklanacak klasör yolu (Vite için dist, CRA için build)
+        retention-days: 7 # GitHub'da kaç gün saklanacağı
   
   phpcheck:
     runs-on: ubuntu-latest
