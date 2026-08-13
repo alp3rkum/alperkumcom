@@ -1,25 +1,76 @@
-name: My First CI Script Ever
+name: My First CI Script Ever (v2) #scriptin adı
 
 #on: ne zaman çalışacak
 on:
   push: #push olduğunda
-    branches: [ "master" ] #master branchine
+    branches: [ "master", "v2" ] #master branchine
+  pull_request:
+    branches: [ "v2" ]
 
 jobs:
-  stage1: #yapılacak işlemin ismi, 'stage1' dışında da herhangi bir şey koyulabilir
+  reactcheck: #yapılacak işlemin ismi, 'stage1' dışında da herhangi bir şey koyulabilir
     runs-on: ubuntu-latest #buluttaki bir Linux makinesinde çalışır
+
+    strategy:
+      matrix:
+        node-version: [22,23,24]
 
     steps: # yapılacak işlemleri (algoritmayı) adım adım tarif et
     - name: Checkout #adım ismi
       uses: actions/checkout@v4 #uses çalıştırılacak komutu tanımlar, bu komut için Github'tan kopyalar
 
-    - name: Setup Node.js
+    - name: Setup Node.js (${{ matrix.node-version }})
       uses: actions/setup-node@v4 #Node.js kurar
       with: # yapılacak işlemin parametrelerini verir
-        node-version: 22 #Node.js 22 kullanıyorum
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
     
     - name: Install Packages
-      run: npm install #run'da terminale komut yazar gibi komut yazılır
+      run: npm ci #run'da terminale komut yazar gibi komut yazılır
+
+    # - name: Security/Vulnerability Control
+    #   run: npm audit --audit-level=high
+
+    # - name: Quality Control
+    #   run: npm run lint -- --max-warnings 10
 
     - name: Build Test
       run: npm run build
+    
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: react-dist-output # Artifact'e verilecek isim
+        path: dist # Saklanacak klasör yolu (Vite için dist, CRA için build)
+        retention-days: 7 # GitHub'da kaç gün saklanacağı
+  
+  phpcheck:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        php-version: ['7.4', '8.2']
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup PHP (${{ matrix.php-version }})
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, pdo, pdo_mysql
+        coverage: none
+      
+    - name: Validate composer.json
+      working-directory: src/php
+      run: composer validate
+    
+    - name: Install Composer Dependencies
+      working-directory: src/php
+      run: composer install --prefer-dist --no-progress
+    
+    - name: PHP Syntax Check (Lint)
+      run: find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \;

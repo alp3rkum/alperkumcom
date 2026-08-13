@@ -1,0 +1,20 @@
+name: Workflow Adı                   # 1. BÖLÜM: Workflow Kimliği
+
+on:                                  # 2. BÖLÜM: Tetikleyiciler (Triggers)
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:                                # 3. BÖLÜM: İş Görevleri (Jobs)
+  job_ismi_1:                        # Her job varsayılan olarak paralel çalışır
+    runs-on: ubuntu-latest           # Çalışacağı işletim sistemi / runner
+
+    steps:                           # 4. BÖLÜM: Sıralı Adımlar (Steps)
+      - name: Adım Adı 1
+        uses: action/adi@vX          # Hazır eylem kullanımı (GitHub Marketplace)
+        with:
+          parametre: deger
+
+      - name: Adım Adı 2
+        run: echo "Terminal komutu"   # Doğrudan terminalde çalışacak komut

@@ -2,58 +2,53 @@
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     require('../../functions/util.php');
     require('../../functions/db.php');
+    
     $database = Database::getInstance();
     $conn = $database->getConnection();
 
     session_start();
     header('Content-Type: application/json');
 
+    // 1. CSRF Kontrolü
     $csrf_token = $_POST['csrf_token'] ?? '';
     if (!csrf_check($csrf_token)) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        echo json_encode([
-            "status" => "error",
-            "message" => "Geçersiz istek (CSRF hatası)!"
-        ]);
+        echo json_encode(["status" => "error", "message" => "Geçersiz istek (CSRF hatası)!"]);
         exit;
     }
 
-    $table = $_POST['table'] ?? null;
-    $data  = json_decode($_POST['data'],true) ?? null;
-    $where = $_POST['where'] ?? null; // update.php'de 'where' koşulu olmalı (örn: id = 5)
+    // 2. Verileri Al (Kritik Düzeltme Burası)
+    $table    = $_POST['table'] ?? null;
+    $data     = json_decode($_POST['data'], true) ?? [];
+    
+    // JS'den doğrudan gönderilen 'kategori' değerini alıyoruz
+    $kategori = $_POST['kategori'] ?? 'genel'; 
 
-    if (!$table || !$data || !is_array($data) || !$where) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Table, data or where condition not specified!"
-        ]);
+    if (!$table || empty($data)) {
+        echo json_encode(["success" => false, "message" => "Tablo veya veri eksik!"]);
         exit;
     }
 
     try {
-        // 1. Projeyi Güncelle
-        $database->update($table, $data, $where);
-        
-        // Proje ID'sini WHERE koşulundan çıkarın (örneğin 'id = 5' ise 5'i al)
-        $projectId = explode('=', $where)[1]; 
-        // NOT: Bu basit ayırma yöntemi, 'where' sorgunuzun formatına bağlıdır. 
-        // Güvenli olması için, önce SELECT yapıp ID'yi çekmek daha iyidir, ama basitleştiriyoruz.
+        // 3. Ana Kaydı Oluştur
+        $projectId = $database->insert($table, $data);
 
-        // 2. Dosya Yükleme İşlemi (create.php'deki mantığın aynısı)
-        $kategori = $data['kategori'] ?? 'proje'; // Kategori bilgisini POST'tan almayı veya varsaymayı unutmayın
+        if (!$projectId) {
+            throw new Exception("Veritabanına kayıt eklenemedi.");
+        }
+
+        // 4. Dosya Yükleme İşlemi
         $uploadDirBase = dirname(__DIR__, 2) . "/assets/images/";
         $mediaFiles = $_FILES['media_files'] ?? null;
 
-        if ($mediaFiles && $mediaFiles['tmp_name'][0] !== "") 
+        if ($mediaFiles && isset($mediaFiles['tmp_name'][0]) && $mediaFiles['tmp_name'][0] !== "") 
         {
+            // Klasör yolu artık doğru: /assets/images/blog/
             $uploadDir = $uploadDirBase . $kategori; 
 
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
 
-            $imageInsertData = [];
-            
             foreach ($mediaFiles['tmp_name'] as $index => $tmpName)
             {
                 if ($mediaFiles['error'][$index] === UPLOAD_ERR_OK)
@@ -69,38 +64,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $mimeType = mime_content_type($targetPath);
                         $tip = (strpos($mimeType, 'video') !== false) ? 1 : 0;
 
-                        // Veri yapısı
-                        $imageInsertData[] = [
-                            'proje_id'    => $projectId, // ÖNEMLİ: Mevcut proje ID'si kullanılıyor
+                        // İlişkili tabloya görseli kaydet
+                        $imageInsertData = [
+                            'proje_id'    => $projectId, // Blog için de olsa ortak sütun adın buysa böyle kalabilir
                             'gorsel_yolu' => $relativePath,
                             'gorsel_tipi' => $tip
                         ];
+
+                        $database->insert('proje_gorseller', $imageInsertData);
                     }
-                    else
-                    {
-                        throw new Exception("Dosya taşınamadı: " . $originalName);
-                    }
-                }
-            }
-            
-            if (!empty($imageInsertData)) {
-                foreach($imageInsertData as $imgData) {
-                    // Proje_gorseller tablosuna yeni kayıt ekle
-                    $database->insert('proje_gorseller', $imgData);
                 }
             }
         }
 
         echo json_encode([
-            "success" => true,
-            "message" => "Proje ve medya dosyaları başarıyla güncellendi!",
-            "id" => $projectId // Güncellenen ID'yi döndürüyoruz
+            "success" => true, 
+            "message" => "İşlem başarıyla tamamlandı!", 
+            "id" => $projectId
         ]);
+
     } catch (Exception $e) {
-        echo json_encode([
-            "success" => false,
-            "message" => $e->getMessage()
-        ]);
+        echo json_encode(["success" => false, "message" => $e->getMessage()]);
     }
 }
 ?>

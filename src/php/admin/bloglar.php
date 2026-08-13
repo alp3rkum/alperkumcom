@@ -2,7 +2,7 @@
 $bloglar = $database->selectMulti("* FROM bloglar");
 $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler");
 ?>
-<main class="bg-gray-50 p-6 min-h-screen">
+<main class="p-6 min-h-screen">
     <div class="max-w-screen-xl mx-auto">
         <?php pageTitle("Bloglar", "Bu sayfada, sitenizde yayınladığınız blog gönderilerini ekleyip düzenleyebilirsiniz."); ?>
 
@@ -12,7 +12,7 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
                 <ul id="dataUl" class="space-y-2 overflow-auto">
                     <?php foreach ($bloglar as $blog): ?>
                         <li class="flex items-center bg-gray-100 hover:bg-indigo-50/70 text-gray-800 px-3 py-2 rounded-lg cursor-pointer transition duration-150" data-id="<?= $blog['id'] ?>">
-                            <span class="font-medium"><?= htmlspecialchars($blog['blog_baslik_tr']) ?></span>
+                            <span class="font-medium"><?= htmlspecialchars($blog['blog_baslik']) ?></span>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -23,20 +23,12 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                            <label for="blog_baslik_tr" class="block font-semibold text-sm text-gray-700 mb-2">Blog Başlığı (Türkçe)</label>
-                            <input type="text" id="blog_baslik_tr" name="blog_baslik_tr" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-sm" minlength="3" maxlength="150" required>
-                        </div>
-                        <div>
-                            <label for="blog_baslik_en" class="block font-semibold text-sm text-gray-700 mb-2">Blog Başlığı (İngilizce)</label>
-                            <input type="text" id="blog_baslik_en" name="blog_baslik_en" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-sm" minlength="3" maxlength="150" required>
+                            <label for="blog_baslik" class="block font-semibold text-sm text-gray-700 mb-2">Blog Başlığı</label>
+                            <input type="text" id="blog_baslik" name="blog_baslik" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-sm" minlength="3" maxlength="150" required>
                         </div>
                         <div class="mt-4">
-                            <label for="blog_icerik_tr" class="block font-semibold text-sm text-gray-700 mb-2">Blog İçeriği (Türkçe)</label>
-                            <textarea id="blog_icerik_tr" name="blog_icerik_tr" rows="3"></textarea>
-                        </div>
-                        <div class="mt-4">
-                            <label for="blog_icerik_en" class="block font-semibold text-sm text-gray-700 mb-2">Blog İçeriği (İngilizce)</label>
-                            <textarea id="blog_icerik_en" name="blog_icerik_en" rows="3"></textarea>
+                            <label for="blog_icerik" class="block font-semibold text-sm text-gray-700 mb-2">Blog İçeriği</label>
+                            <textarea id="blog_icerik" name="blog_icerik" rows="3"></textarea>
                         </div>
                     </div>
 
@@ -85,24 +77,14 @@ $kategoriler = $database->selectMulti("id, kategori_adi_tr FROM blog_kategoriler
                     <h4 class="text-md font-bold text-gray-800 border-b pb-3 mb-3">SEO Ayarları</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                            <label for="meta_title_tr" class="block font-semibold text-sm text-gray-700 mb-2">SEO Başlık (TR)</label>
-                            <input type="text" id="meta_title_tr" name="meta_title_tr" class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
-                            <label for="meta_desc_tr" class="block font-semibold text-sm text-gray-700 mt-3 mb-2">SEO Açıklama (TR)</label>
-                            <input type="text" id="meta_desc_tr" name="meta_desc_tr" class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
-                            <label for="meta_keyword_tr" class="block font-semibold text-sm text-gray-700 mt-3 mb-2">SEO Keyword (TR)</label>
-                            <input type="text" id="meta_keyword_tr" name="meta_keyword_tr" class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
-                            <label for="meta_url_tr" class="block font-semibold text-sm text-gray-700 mt-3 mb-2">URL (TR)</label>
-                            <input type="text" id="meta_url_tr" name="meta_url_tr" class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2.5" readonly>
-                        </div>
-                        <div>
-                            <label for="meta_title_en" class="block font-semibold text-sm text-gray-700 mb-2">SEO Başlık (EN)</label>
-                            <input type="text" id="meta_title_en" name="meta_title_en" class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
-                            <label for="meta_desc_en" class="block font-semibold text-sm text-gray-700 mt-3 mb-2">SEO Açıklama (EN)</label>
-                            <input type="text" id="meta_desc_en" name="meta_desc_en" class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
-                            <label for="meta_keyword_en" class="block font-semibold text-sm text-gray-700 mt-3 mb-2">SEO Keyword (EN)</label>
-                            <input type="text" id="meta_keyword_en" name="meta_keyword_en" class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
-                            <label for="meta_url_en" class="block font-semibold text-sm text-gray-700 mt-3 mb-2">URL (EN)</label>
-                            <input type="text" id="meta_url_en" name="meta_url_en" class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2.5" readonly>
+                            <label for="meta_title" class="block font-semibold text-sm text-gray-700 mb-2">SEO Başlık</label>
+                            <input type="text" id="meta_title" name="meta_title" class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
+                            <label for="meta_desc" class="block font-semibold text-sm text-gray-700 mt-3 mb-2">SEO Açıklama</label>
+                            <input type="text" id="meta_desc" name="meta_desc" class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
+                            <label for="meta_keyword" class="block font-semibold text-sm text-gray-700 mt-3 mb-2">SEO Keyword</label>
+                            <input type="text" id="meta_keyword" name="meta_keyword" class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
+                            <label for="meta_url" class="block font-semibold text-sm text-gray-700 mt-3 mb-2">URL</label>
+                            <input type="text" id="meta_url" name="meta_url" class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2.5" readonly>
                         </div>
                     </div>
 

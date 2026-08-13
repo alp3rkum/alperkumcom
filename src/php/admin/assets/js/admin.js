@@ -71,7 +71,7 @@ function deleteItem(table,itemId,endpoint,imageItemId = null) {
 }
 
 function updateRecord(table, rawformData) {
-    const whereClause = "id=" + formData.get("id"); 
+    const whereClause = "id=" + rawformData.get("id"); 
     formData.append("table",table);
     formData.append("where", whereClause);
 
